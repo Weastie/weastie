@@ -1,0 +1,45 @@
+extends ../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle(['Admin', 'New Event'])
+	script(src='/assets/script/admin/new_event.js')
+
+block content
+	if success
+		h2(style='color: green') Successfully added event!
+	h1 New Event
+	form(method='POST')#eventForm.styledForm
+		label(for='title').header.verticalLabel Event title
+		input(type='text',name='title',placeholder='Title')#title
+		div#titleerror.errorLabel.hidden
+			| Title must be between 1 and 75 characters
+		label(for='desc').header.verticalLabel Event description (optional)
+		textarea(name='desc',placeholder='Description (Optional)', rows='3', maxlength='250')#desc
+		hr
+		label.header.verticalLabel Event date:
+
+		br
+
+		div.tabbedFormBlock
+			label(for='date-start',style='font-size: 1em').header.verticalLabel Start Date
+			input(type='date', required)#date-start
+			div#dateerror1.errorLabel.hidden
+				| Event must start in the future
+			label(for='date-start',style='font-size: 1em', required).header.verticalLabel Start Time
+			input(type='time', required)#time-start
+
+			br
+			br
+
+			label(for='date-end',style='font-size: 1em', required).header.verticalLabel End Date
+			input(type='date',required)#date-end
+			div#dateerror2.errorLabel.hidden
+				| Event must end after the start date
+			label(for='date-start',style='font-size: 1em').header.verticalLabel End Time
+			input(type='time',required)#time-end
+		br
+		//- Actually dates inserted by JS
+		input(type='hidden', name='start')#start
+		input(type='hidden', name='end')#end
+
+		input(type='submit', value='Add Event').btn.btnRed.btnRaised

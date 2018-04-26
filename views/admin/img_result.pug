@@ -1,0 +1,12 @@
+head
+  style.
+    body {
+      background-color: white
+    }
+  script.
+    function script () {
+      window.top.addImages( document.getElementById('div').dataset.ids )
+    }
+
+body(onload='script()')
+  div(data-ids=(fileNames))#div

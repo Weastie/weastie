@@ -1,0 +1,19 @@
+extends ../core/template.pug
+
+block headExtra
+  title=global.essentials.formatTitle(['Admin', 'Login'])
+  script.
+    $(document).ready(function () {
+      date = Number($('#date').html())
+      $('#date').html( (new Date(date)).toLocaleString() )
+    })
+
+block content
+  h1 Admin Login
+  form(method='POST').styledForm
+    label(for='pass').header.verticalLabel Please enter the master password in
+    input(name="password",type="password",placeholder='Password')#pass
+    br
+    button(type="submit").btn.btnRed.btnRaised Login
+    p Password last changed:
+    span#date=lastChanged

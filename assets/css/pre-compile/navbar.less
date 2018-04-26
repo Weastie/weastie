@@ -1,0 +1,85 @@
+.navBar {
+ position: fixed;
+ left: 0;
+ right: 0;
+ top: 0;
+ background-color: #051a3c;
+ box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+ padding: 0px;
+ margin: 0px;
+}
+.navBar ul {
+ margin: 0px;
+ list-style-type: none;
+ padding: 0px;
+}
+.navBar ul li {
+ float: left;
+}
+.navBar.collapsed ul li {
+ float: none !important;
+}
+.navBar ul li a {
+ display: block;
+ text-decoration: none;
+ color: white;
+ padding: 20px;
+ text-align: center;
+}
+.navBar.collapsed ul li a {
+ padding: 20px 10px !important;
+ border-bottom: 1px solid #083974;
+ text-align: left !important;
+}
+.navBar ul li a:hover {
+ background-color: #0f3eb6;
+}
+.navbar ul li .active {
+ background-color: #0f3eb6;
+}
+.navbar ul li .navBarRight {
+ float: right !important;
+}
+.drawerBtn {
+ margin-top: 15px;
+ margin-right: 12px;
+ display: block;
+ border: 1px solid white;
+ border-radius: 5px;
+ padding: 4px 7px !important;
+ /*overflow: hidden;*/
+}
+.drawerBtnBar {
+ display: block;
+ width: 18px;
+ height: 2px;
+ background-color: white;
+ margin-top: 4px;
+ margin-bottom: 4px;
+}
+.drawer {
+ background-color: white;
+ position: fixed;
+ top: 0;
+ left: 0;
+ height: 100vh;
+ width: 300px;
+ z-index: 99999;
+ box-shadow:0 16px 24px 2px rgba(0,0,0,.14),0 6px 30px 5px rgba(0,0,0,.12),0 8px 10px -5px rgba(0,0,0,.2)
+}
+.drawer ul {
+ list-style-type: none;
+ margin: 0px;
+ padding: 0px;
+}
+.drawer ul li a {
+ display: block;
+ padding: 20px;
+ text-decoration: none;
+ color: black;
+ /*width: 100%;*/
+}
+.drawer ul li a:hover {
+ background-color: #666;
+ color: white;
+}

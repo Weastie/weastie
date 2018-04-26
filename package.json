@@ -1,0 +1,32 @@
+{
+  "name": "Weastie.com",
+  "version": "1.0.0",
+  "description": "Ryan Weast's personal site",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Weast",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.1",
+    "combijson": "^1.1.1",
+    "compression": "^1.6.2",
+    "express": "^4.15.2",
+    "express-ipn": "^1.0.3",
+    "express-session": "^1.15.4",
+    "formidable": "^1.1.1",
+    "jimp": "^0.2.28",
+    "json-reader": "^1.0.7",
+    "mongodb": "^2.2.24",
+    "mv": "^2.1.1",
+    "pug": "^2.0.0-beta11",
+    "request": "^2.81.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Weastie/weastie"
+  }
+}

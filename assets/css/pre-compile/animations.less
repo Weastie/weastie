@@ -1,0 +1,118 @@
+.rotateUp {
+  animation: rotateUp 0.35s ease-in-out forwards;
+}
+.rotateDown {
+  animation: rotateDown 0.35s ease-in-out forwards;
+}
+.appear {
+  animation: appear 0.35s ease-in-out forwards;
+}
+.hide {
+  animation: hide 0.35s ease-in-out forwards;
+}
+.drawerAppear {
+  animation: drawerAppear 0.25s ease-in-out forwards;
+}
+.drawerHide {
+  animation: drawerHide 0.25s ease-in-out forwards;
+}
+.fadeOutHalf {
+  animation: fadeOutHalf 0.25s ease-in-out forwards;
+}
+.fadeIn {
+  animation: fadeIn 0.25s ease-in-out forwards;
+}
+.toBlack {
+  animation: toBlack 0.25s ease-in-out forwards;
+}
+.toWhite {
+  animation: toBlack 0.25s ease-in-out forwards;
+  animation-direction: reverse;
+}
+
+@keyframes rotateUp {
+  0% {
+    transform:rotate(0deg)
+  }
+  100% {
+    transform:rotate(180deg)
+  }
+}
+@keyframes rotateDown {
+  0% {
+    transform:rotate(180deg)
+  }
+  100% {
+    transform:rotate(360deg)
+  }
+}
+@keyframes appear {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+@keyframes hide {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes drawerAppear {
+  0% {
+    margin-left: -300px;
+    visibility: hidden;
+  }
+  100% {
+    margin-left: 0px;
+    visibility: visible;
+  }
+}
+@keyframes drawerHide {
+  0% {
+    margin-left: 0px;
+    visibility: visible;
+  }
+  100% {
+    margin-left: -300px;
+    visibility: hidden;
+  }
+}
+@keyframes fadeOutHalf {
+  0% {
+    opacity: 1;
+  }
+  0.1% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0.3;
+  }
+  99.9% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes toBlack {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: #424242
+  }
+}

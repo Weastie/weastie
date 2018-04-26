@@ -1,0 +1,135 @@
+body {
+ font-family: 'Open Sans', sans-serif;
+ margin: 0px;
+ padding: 0px;
+ background-color: white;
+}
+a {
+ text-decoration: none;
+ color: blue;
+}
+a:hover {
+ text-decoration: underline;
+}
+h1 {
+ font-size: 38px;
+ font-weight: lighter;
+ margin: 13px auto 20px auto;
+}
+h2 {
+ font-size: 28px;
+ font-weight: lighter;
+ margin: 12px auto 17px auto;
+}
+h3 {
+ font-size: 25px;
+ font-weight: lighter;
+ margin: 11px auto 16px auto;
+}
+h4 {
+ font-size: 18px;
+}
+h5 {
+ font-size: 14px;
+}
+h6 {
+ font-size: 10px;
+}
+hr {
+ border: 1px solid;
+ border-color: grey;
+ margin: 20px 0px;
+ display: block;
+}
+
+
+/*
+* New classes
+*/
+.hidden {
+  display: none !important;
+}
+.floatLeft {
+  float: left !important;
+}
+.floatRight {
+  float: right !important;
+}
+.centerBlock {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.centerText {
+  text-align: center;
+}
+.centerChildren {
+  text-align: center;
+}
+.bold {
+  font-weight: bold;
+}
+.underline {
+  text-decoration: underline;
+}
+.smallText {
+  font-size: 0.85em;
+}
+.biggerText {
+  font-size: 1.15em;
+}
+
+
+.contentBody {
+ margin-top: 80px;
+}
+.container-full {
+  margin-left: auto;
+  margin-right: auto;
+}
+.container {
+ margin-left: auto;
+ margin-right: auto;
+ padding-left: 10px;
+ padding-right: 10px;
+}
+@media (min-width: 760px) {
+  .container {
+    width: 740px;
+  }
+}
+@media (min-width: 970px) {
+  .container {
+    width: 880px;
+  }
+}
+@media (min-width: 1250px) {
+  .container {
+    width: 1050px;
+  }
+}
+@media (min-width: 1550px) {
+  .container {
+    width: 1250px;
+  }
+}
+
+.smallOnly {
+ display: none;
+}
+.bigOnly {
+ display: block;
+}
+@media (max-width: 759px) {
+  .smallOnly {
+    display: block;
+  }
+  .bigOnly {
+    display: none;
+  }
+}
+.dateGrey {
+  color: grey;
+  font-style: italic;
+  font-size: .85em;
+}

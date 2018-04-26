@@ -1,0 +1,23 @@
+extends ../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle(["Games", "Brashbrawl"])
+	link(rel='stylesheet',type='text/css',href='/assets/css/brashbrawl.css')
+	script(src="https://cdn.socket.io/socket.io-1.4.5.js")
+	script(src='/assets/script/games/brashbrawl.js')
+
+block content
+	h1.centerText Brash Brawl
+	div#input-div.hidden
+		h1 Welcome to Brash Brawl!
+		input(type="text" placeholder="Enter a name" maxlength="18" id="nameInput")
+		input(type="button" onclick="enterGame()" value="Play!" draggable="false" id="button1")
+		input(type="button" onclick="showControls()" value="Controls" draggable="false" id="button2")
+	div(align="center")
+		canvas(id="gamecanvas",width="800",height="600",style="display: inline-block",tabindex="0",oncontextmenu="return false;")
+		div(tabindex='1')#chat-div
+			div#chat-area
+				div#chat-ul
+			div#chat-form
+				input(type="text" placeholder="Enter a message" id="chatInput")
+				input(type="button" onclick="sendChat()" value="Send" draggable="false" id="chatButton")

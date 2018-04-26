@@ -1,0 +1,14 @@
+extends template.pug
+
+block headExtra
+  if error
+    title=global.essentials.formatTitle('Error')
+  else
+    title=global.essentials.formatTitle('Success')
+
+block content
+  if error
+    h1 Error
+  else
+    h1 Success
+  p=text

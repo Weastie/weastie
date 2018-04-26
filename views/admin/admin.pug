@@ -1,0 +1,14 @@
+extends ../core/template.pug
+
+block headExtra
+  title=global.essentials.formatTitle(['Admin', 'Home'])
+
+block content
+  h1 Admin
+  ul
+    li
+      a(href='/admin/settings') Edit admin settings
+    li
+      a(href='/admin/new_article') Create a new article
+    li
+      a(href='/admin/new_event') Add a new event to the calendar

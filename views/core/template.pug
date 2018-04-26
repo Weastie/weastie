@@ -1,0 +1,47 @@
+doctype html
+
+html
+	head
+		meta(name='viewport',content='width=device-width,initial-scale=1')
+		meta(charset='UTF-8')
+		link(rel="icon",href="/assets/img/favicon.ico",type="image/x-icon")
+		script(src='/assets/script/core/jquery-3.2.1.min.js')
+		link(rel='stylesheet',href='/assets/css/compiled/main.css')
+		script(src='/assets/script/core/body.js')
+		block headExtra
+	body
+		div#mainDrawer.drawer.hidden
+			ul
+				li
+					a(href='/blog') Blog
+		div#body
+			div#mainNavBar.navBar
+				div.container
+					div
+						ul
+							li
+								a(href='#',data-for='mainDrawer').drawerBtn
+									span.drawerBtnBar
+									span.drawerBtnBar
+									span.drawerBtnBar
+							li
+								a(href='/') Home
+					div.bigOnly
+						ul
+							//- Left side of nav bar
+							li
+								a(href='/blog') Blog
+							//- Right side of nav bar
+							div.floatRight
+								if sess.loggedIn
+									li
+										a(href=('/' + sess.username))=sess.username
+								else
+									li
+										a(href='/login') Login
+									li
+										a(href='/register') Register
+			div.container.contentBody
+				span(data-alerts=(JSON.stringify(alerts)))#serverAlerts.hidden
+				div#alertsDiv
+				block content
