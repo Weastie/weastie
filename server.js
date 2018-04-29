@@ -40,6 +40,8 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 app.use('/assets', express.static('./assets'));
 app.use('/packages', express.static('./node_modules'));
+// Lets encrypt verification
+app.use('/well-known/acme-challenge', express.static('./ssl'));
 
 var startServer = function () {
 	app.listen(app.get('port'), function () {
@@ -91,6 +93,15 @@ app.get('/', function (req, res) {
 	renderTempl('general/home', req, res);
 });
 
+// Logout
+app.get('/logout', function (req, res) {
+	if (req.session.loggedIn) {
+		req.session.loggedIn = false;
+		renderTempl('general/home', req, res, {alerts: [{message: 'Successfully logged out', type: 'success'}]});
+	} else {
+		renderTempl('general/home', req, res, {alerts: [{message: 'You must be logged in to log out', type: 'error'}]});
+	}
+});
 // Login
 app.get('/login', function (req, res) {
 	renderTempl('account/login', req, res);

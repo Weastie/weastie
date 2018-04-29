@@ -31,11 +31,15 @@ html
 							//- Left side of nav bar
 							li
 								a(href='/blog') Blog
+							li
+								a(href='/games/brashbrawl') Brash Brawl
 							//- Right side of nav bar
 							div.floatRight
 								if sess.loggedIn
 									li
 										a(href=('/' + sess.username))=sess.username
+									li
+										a(href=('/logout')) Logout
 								else
 									li
 										a(href='/login') Login

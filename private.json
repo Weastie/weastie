@@ -1,4 +1,4 @@
 {
   "session_secret": "b154bb96de64feb1a1aa6ba228899338b6ed72158f29de101828de8f9660059a",
-  "databaseURL": "mongodb://Weastie:Cabinetsanta@127.0.0.1:27017/?authMechanism=DEFAULT"
+  "databaseURL": "mongodb://127.0.0.1:27017/"
 }
