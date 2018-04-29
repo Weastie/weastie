@@ -28,25 +28,42 @@ const bcrypt = require('bcrypt-nodejs');
 var bodyParser = require('body-parser');
 // Read multipart forms
 // const formidable = require('formidable');
-// Manage file system\
+// Manage file system
+const fs = require('fs');
 // const path = require('path');
 // const mv = require('mv');
+// HTTP or HTTPS
+var http = require('http');
+var https = require('https');
+
+const PRODUCTION = (process.env.PRODUCTION === 'true');
 
 // Middleware and express configuration
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(compression());
-app.set('port', process.argv[2] || 80);
+app.set('port', PRODUCTION ? 443 : 3000); // 443 (https) for production, 3000 for testing
 app.set('view engine', 'pug');
 app.set('views', './views');
 app.use('/assets', express.static('./assets'));
 app.use('/packages', express.static('./node_modules'));
 // Lets encrypt verification
-app.use('/well-known/acme-challenge', express.static('./ssl'));
+app.use('/.well-known/acme-challenge', express.static('./ssl/.well-known/acme-challenge'));
 
 var startServer = function () {
-	app.listen(app.get('port'), function () {
-		console.log('Server started on port: ' + app.get('port'));
-	});
+	if (PRODUCTION) {
+		// Get SSL certificate
+		var ssl = {
+			key: fs.readFileSync('/etc/letsencrypt/live/privkey.pem', 'utf8'),
+			cert: fs.readFileSync('/etc/letsencrypt/live/fullchain.pem', 'utf8')
+		};
+		https.createServer(ssl, app).listen(app.get('port'), function () {
+			console.log('Server started on port: ' + app.get('port'));
+		});
+	} else {
+		http.createServer(app).listen(app.get('port'), function () {
+			console.log('Server started on port: ' + app.get('port'));
+		});
+	}
 };
 
 // Read sensitive data from private.json
