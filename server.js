@@ -37,6 +37,7 @@ var http = require('http');
 var https = require('https');
 
 const PRODUCTION = (process.env.PRODUCTION === 'true');
+console.log('PRODUCTION MODE: ' + PRODUCTION);
 
 // Middleware and express configuration
 app.use(bodyParser.urlencoded({extended: false}));
@@ -53,8 +54,8 @@ var startServer = function () {
 	if (PRODUCTION) {
 		// Get SSL certificate
 		var ssl = {
-			key: fs.readFileSync('/etc/letsencrypt/live/privkey.pem', 'utf8'),
-			cert: fs.readFileSync('/etc/letsencrypt/live/fullchain.pem', 'utf8')
+			key: fs.readFileSync('/etc/letsencrypt/live/weastie.com/privkey.pem', 'utf8'),
+			cert: fs.readFileSync('/etc/letsencrypt/live/weastie.com/fullchain.pem', 'utf8')
 		};
 		https.createServer(ssl, app).listen(app.get('port'), function () {
 			console.log('Server started on port: ' + app.get('port'));
