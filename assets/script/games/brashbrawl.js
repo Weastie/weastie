@@ -369,7 +369,7 @@ socket.on('send-basic-player-info', function(data) {
 	}
 	generateLeaderboards();
 })
-socket.on('new-player', function(newPlayer) {
+socket.on('new-player', function (newPlayer) {
 	playerListOpen[newPlayer.id] = newPlayer;
 	playerListOpen[newPlayer.id].name = playerListOpen[newPlayer.id].name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	if (isPlaying) {
@@ -377,7 +377,7 @@ socket.on('new-player', function(newPlayer) {
 	}
 	generateLeaderboards();
 });
-socket.on('delete-player', function(playerId) {
+socket.on('delete-player', function (playerId) {
 	// If they don't exist, no errors are returned, so let's just delete them no matter what.
 	if (isPlaying) {
 		addMessage('<li><span style=\'color: ' + playerListOpen[playerId].color + '\'>' + playerListOpen[playerId].name + ' has disconnected! :(');
@@ -387,8 +387,23 @@ socket.on('delete-player', function(playerId) {
 	generateLeaderboards();
 });
 socket.on('send-secure-player-info', function (data) {
-	if (Math.random() > 0.99) {
+	if (Math.random() > 0.98) {
 		console.log('BYTES: ' + JSON.stringify(data).length);
+	}
+	// "Uncompress" data so it is readable
+	for (var i in data) {
+		data[i].width = data[i].w; delete data[i].w;
+		data[i].height = data[i].ht; delete data[i].ht;
+		data[i].health = data[i].hl; delete data[i].hl;
+		data[i].isJihad = data[i].ij; delete data[i].ij;
+		data[i].isInvuln = data[i].ii; delete data[i].ii;
+		data[i].bonuses = data[i].b; delete data[i].b;
+		data[i].weapon = weaponIds[data[i].wp]; delete data[i].wp;
+		data[i].mouse = data[i].m; delete data[i].m;
+		if (i === myId) {
+			data[i].canAttack = data[i].ca; delete data[i].ca;
+			data[i].alive = data[i].a; delete data[i].a;
+		}
 	}
 	playerListSecure = data;
 	for (var p in playerListSecure) {
@@ -396,16 +411,19 @@ socket.on('send-secure-player-info', function (data) {
 		playerListSecure[p].y = Math.round(playerListSecure[p].y);
 	}
 });
-socket.on('send-bullet-info', function(data) {
+socket.on('send-bullet-info', function (data) {
 	bullets = data;
 });
-socket.on('send-bonuses-info', function(data) {
+socket.on('send-bonuses-info', function (data) {
 	bonuses = data;
-})
-socket.on('send-explosions-info', function(data) {
-	 explosions = data;
 });
-socket.on('new-weapon', function(name) {
+socket.on('send-explosions-info', function (data) {
+	for (var i in data) {
+		data[i].radius = data[i].r; delete data[i].r;
+	}
+	explosions = data;
+});
+socket.on('new-weapon', function (name) {
 	curWeaponId = 0;
 	curWeapon = name;
 	for (var i = 0; i < weaponIds.length; i++) {
