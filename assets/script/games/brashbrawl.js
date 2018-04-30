@@ -1,5 +1,5 @@
-/* global io Image */
-var socket = io('https://weastie.com:8085', {secure: true});
+/* global io Image $ */
+var socket = io(window.location.protocol + '//' + window.location.hostname + ':8085');
 var canvas;
 var ctx;
 var myId;
@@ -295,10 +295,10 @@ var playerListOpen = {};
 var playerListSecure = {};
 var bullets = [];
 var keyboardInput = {
-	moveUp:false,
-	moveLeft:false,
-	moveRight:false,
-	moveDown:false
+	moveUp: false,
+	moveLeft: false,
+	moveRight: false,
+	moveDown: false
 }
 
 function addMessage(msg) {
@@ -378,7 +378,7 @@ socket.on('new-player', function(newPlayer) {
 	generateLeaderboards();
 });
 socket.on('delete-player', function(playerId) {
-	//If they don't exist, no errors are returned, so let's just delete them no matter what.
+	// If they don't exist, no errors are returned, so let's just delete them no matter what.
 	if (isPlaying) {
 		addMessage('<li><span style=\'color: ' + playerListOpen[playerId].color + '\'>' + playerListOpen[playerId].name + ' has disconnected! :(');
 	}
@@ -386,7 +386,10 @@ socket.on('delete-player', function(playerId) {
 	delete playerListSecure[playerId];
 	generateLeaderboards();
 });
-socket.on('send-secure-player-info', function(data) {
+socket.on('send-secure-player-info', function (data) {
+	if (Math.random() > 0.99) {
+		console.log('BYTES: ' + JSON.stringify(data).length);
+	}
 	playerListSecure = data;
 	for (var p in playerListSecure) {
 		playerListSecure[p].x = Math.round(playerListSecure[p].x);
@@ -466,22 +469,29 @@ socket.on('player-killed', function(killer, killed, weapon) {
 	}
 });
 
-socket.on('death', function(timeOfRespawn) {
+socket.on('death', function (timeOfRespawn) {
 	respawnTime = Date.now() + timeOfRespawn - latency;
-})
+});
 
-function generateLeaderboards() {
+function generateLeaderboards () {
 	leaderboards = [];
 	for (var p in playerListOpen) {
-		leaderboards.push({score:playerListOpen[p].score, kills:playerListOpen[p].kills, deaths:playerListOpen[p].deaths, name:playerListOpen[p].name, color:playerListOpen[p].color});
+		leaderboards.push(
+			{
+				score: playerListOpen[p].score,
+				kills: playerListOpen[p].kills,
+				deaths: playerListOpen[p].deaths,
+				name: playerListOpen[p].name,
+				color: playerListOpen[p].color
+			});
 	}
-	leaderboards.sort(function(a, b){return b.score - a.score});
+	leaderboards.sort(function (a, b) { return b.score - a.score; });
 }
 
-function drawPlayers() {
+function drawPlayers () {
 	for (var p in playerListSecure) {
-		if (p == myId && playerListSecure[myId].alive == false) {
-		}else{
+		if (p === myId && playerListSecure[myId].alive === false) {
+		} else {
 			// Fill text
 			ctx.font = '11pt Arial';
 			ctx.fillStyle = 'black';
@@ -489,15 +499,14 @@ function drawPlayers() {
 			ctx.fillText(playerListOpen[p].name, playerListSecure[p].x + playerListSecure[p].width * 0.5, playerListSecure[p].y - 20);
 
 			// Fill player health bar
-
-			ctx.fillStyle='red';
+			ctx.fillStyle = 'red';
 			var hbs = Math.round((playerListSecure[p].width * 1.5) * 0.125) / 0.125;
 			ctx.fillRect(playerListSecure[p].x - (hbs - playerListSecure[p].width) / 2, playerListSecure[p].y - 15, hbs, 10);
-			ctx.fillStyle='green';
+			ctx.fillStyle = 'green';
 			ctx.fillRect(playerListSecure[p].x - (hbs - playerListSecure[p].width) / 2, playerListSecure[p].y - 15, Math.ceil((playerListSecure[p].health / 100) * hbs), 10);
-			ctx.strokeStyle='black';
+			ctx.strokeStyle = 'black';
 			if (playerListSecure[p].isJihad) {
-				ctx.strokeStyle='red';
+				ctx.strokeStyle = 'red';
 			}
 			ctx.lineWidth = 2;
 			ctx.strokeRect(playerListSecure[p].x - (hbs - playerListSecure[p].width) / 2, playerListSecure[p].y - 15, hbs, 10);
@@ -512,6 +521,13 @@ function drawPlayers() {
 			ctx.fillRect(playerListSecure[p].x, playerListSecure[p].y, playerListSecure[p].width, playerListSecure[p].height);
 			ctx.globalAlpha = 1;
 			ctx.strokeStyle = 'black';
+			if (playerListSecure[p].bonuses.damage.present && playerListSecure[p].bonuses.speed.present) {
+				ctx.strokestyle = 'green'; // Green for speed and damage
+			} else if (playerListSecure[p].bonuses.damage.present) {
+				ctx.strokeStyle = 'blue'; // Blue for damage
+			} else if (playerListSecure[p].bonuses.speed.present) {
+				ctx.strokeStyle = 'yellow'; // Yellow for speed
+			}
 			ctx.lineWidth = 2;
 			ctx.strokeRect(playerListSecure[p].x + 1, playerListSecure[p].y + 1, playerListSecure[p].width - 2, playerListSecure[p].height - 2);
 		}

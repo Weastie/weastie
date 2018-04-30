@@ -60,12 +60,13 @@ var startServer = function () {
 		https.createServer(ssl, app).listen(app.get('port'), function () {
 			console.log('Server started on port: ' + app.get('port'));
 		});
+		// Create http server for redirect
 		http.createServer(function (req, res) {
 			res.writeHead(302, {'Location': 'https://www.weastie.com' + req.url});
 			res.end();
 		}).listen(80);
 	} else {
-		http.createServer(app).listen(app.get('port'), function () {
+		app.listen(app.get('port'), function () {
 			console.log('Server started on port: ' + app.get('port'));
 		});
 	}
