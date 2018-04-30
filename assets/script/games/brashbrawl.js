@@ -1,5 +1,5 @@
 /* global io Image */
-var socket = io('weastie.com:8085');
+var socket = io('https://weastie.com:8085', {secure: true});
 var canvas;
 var ctx;
 var myId;
@@ -833,5 +833,5 @@ function ping () {
 }
 socket.on('peng', function () {
 	latency = Date.now() - pingTime;
-	setTimeout(ping, 2500);
+	setTimeout(ping, 750);
 });
