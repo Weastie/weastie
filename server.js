@@ -86,6 +86,10 @@ jsonReader.jsonObject('./private.json', function (err, data) {
 			assert.equal(null, err, 'Error: failed to open \'users\' collection: ' + err);
 			mCols.users = collection;
 		});
+		db.createCollection('blogs', function (err, collection) {
+			assert.equal(null, err, 'Error: failed to open \'blogs\' collection: ' + err);
+			mCols.blogs = collection;
+		});
 
 		console.log('Successfully connected to database...');
 		startServer();
@@ -123,6 +127,47 @@ app.get('/logout', function (req, res) {
 		renderTempl('general/home', req, res, {alerts: [{message: 'Successfully logged out', type: 'success'}]});
 	} else {
 		renderTempl('general/home', req, res, {alerts: [{message: 'You must be logged in to log out', type: 'error'}]});
+	}
+});
+// Settings
+app.get('/settings', function (req, res) {
+	if (req.session.loggedIn) {
+		renderTempl('account/settings', req, res);
+	} else {
+		renderTempl('core/result', req, res, {error: true, text: 'You must be logged in to change settings'});
+	}
+});
+app.post('/settings', function (req, res) {
+	if (req.session.loggedIn) {
+		var form = JSON.parse(JSON.stringify(req.body));
+
+		var legitForm = validateForm(form, {
+			'curpass': 'string',
+			'newpass': 'string'
+		});
+
+		if (legitForm) {
+			// Check password
+			mCols.users.findOne({_id: req.session._id}, function (err, doc) {
+				assert.equal(err, null, 'Error when finding user during settings change: ' + err);
+				bcrypt.compare(form.curpass, doc.password, function (err, match) {
+					assert.equal(err, null, 'Error when verifying password during settings change: ' + err);
+					if (match) {
+						// Current password is good, now lets hash the new one
+						bcrypt.hash(form.newpass, null, null, function (err, hash) {
+							assert.equal(err, null, 'Error when hashing password during settings change: ' + err);
+							mCols.users.update({_id: req.session._id}, {$set: {password: hash}}, function () {
+								renderTempl('account/settings', req, res, {alerts: [{message: 'Successfully changed password', type: 'success'}]});
+							});
+						});
+					} else {
+						renderTempl('account/settings', req, res, {alerts: [{message: 'Incorrect password', type: 'error'}]});
+					}
+				});
+			});
+		}
+	} else {
+		renderTempl('core/result', req, res, {error: true, text: 'You must be logged in to change settings'});
 	}
 });
 // Login
@@ -215,7 +260,8 @@ app.post('/register', function (req, res) {
 							username: form.user,
 							email: form.email,
 							password: hash,
-							data: Date.now()
+							data: Date.now(),
+							permissions: 0
 						}, function () {
 							setLoginSession(newId, req, function () {
 								renderTempl('general/home', req, res, {alerts: [{message: 'Successfully registered', type: 'success'}]});
@@ -247,10 +293,66 @@ function setLoginSession (id, req, callback) {
 		req.session.username = doc.username;
 		req.session.email = doc.email;
 		req.session._id = doc._id;
+		req.session.permissions = doc.permissions;
 		req.session.loggedIn = true;
 		callback();
 	});
 }
+
+app.get('/blogs', function (req, res) {
+	mCols.blogs.find({}, {_id: 1, title: 1, date: 1}, {sort: {date: -1}}).toArray(function (err, docs) {
+		assert.equal(err, null, 'Error when searching blogs: ' + err);
+		renderTempl('general/view_blogs', req, res, {blogs: docs});
+	});
+});
+app.get('/blog/:_id', function (req, res) {
+	var id = global.essentials.convertID(req.params._id);
+	mCols.blogs.findOne({_id: id}, function (err, doc) {
+		assert.equal(err, null, 'Error when searching for blog: ' + err);
+		if (doc === null) {
+			renderTempl('core/result', req, res, {error: true, text: '404: Could not find blog'});
+		} else {
+			renderTempl('general/view_blog', req, res, {blog: doc});
+		}
+	});
+});
+
+/*
+ * ADMIN
+ */
+// Middleware for only allowing users to access admin functions if correct session variables set
+app.get(/(\/admin)(.+)?/, function (req, res, next) {
+	if (req.session.loggedIn && req.session.permissions === 2) {
+		next();
+	} else {
+		render404(req, res);
+	}
+});
+app.post(/(\/admin)(.+)?/, function (req, res, next) {
+	if (req.session.loggedIn && req.session.permissions === 2) {
+		next();
+	} else {
+		render404(req, res);
+	}
+});
+
+app.get('/admin', function (req, res) {
+	renderTempl('admin/admin', req, res);
+});
+app.get('/admin/upload_blog', function (req, res) {
+	renderTempl('admin/upload_blog', req, res);
+});
+app.post('/admin/upload_blog', function (req, res) {
+	var id = generateID(7);
+	mCols.blogs.insert({
+		_id: id,
+		title: req.body.title,
+		date: Date.now(),
+		content: req.body.content,
+		tags: req.body.tags
+	});
+	res.redirect('/blog/' + global.essentials.convertID(id));
+});
 
 // Games
 app.get('/games', function (req, res) {
@@ -270,6 +372,8 @@ function validateForm (form, obj) {
 			if (toType(form[key]) !== obj[key]) {
 				return false;
 			}
+		} else {
+			return false;
 		}
 	}
 	return true;

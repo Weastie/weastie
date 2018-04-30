@@ -4,7 +4,6 @@ var canvas;
 var ctx;
 var myId;
 var isPlaying = false;
-var mapWidth = 800;
 var latency = 0;
 var pingTime = 0;
 var tiles = [null];
@@ -14,7 +13,6 @@ var mapReady = false;
 var blockSize = 64;
 var mouseDown;
 var respawnTime;
-var chatLog;
 var showLeaderboard = false;
 var curWeapon = 'rifle';
 var curWeaponId = 0;
@@ -24,7 +22,7 @@ var minimapReady = false;
 var bonuses = [];
 var leaderboards = [];
 var gameMode = 0;
-var canoffset
+var canoffset;
 var teams = [
 	{
 		kills: 0
@@ -164,87 +162,86 @@ $(document).ready(function () {
 	$('#input-div').removeClass('hidden');
 	canvas = document.getElementById('gamecanvas');
 	canoffset = $(canvas).offset();
-	document.getElementById('input-div').style.left = canoffset.left + canvas.width / 2 + 'px';
-	window.onresize = function () {
+	$('#input-div').css({left: canoffset.left + canvas.width / 2 + 'px'});
+	$(window).resize(function () {
 		canoffset = $(canvas).offset();
-		document.getElementById('input-div').style.left = canoffset.left + canvas.width / 2 + 'px';
-	}
-	document.getElementById('input-div').addEventListener('keydown', function(e) {
-		if (e.keyCode == 13) {
+		$('#input-div').css({left: canoffset.left + canvas.width / 2 + 'px'});
+	});
+	$('#input-div').on('keydown', function (e) {
+		if (e.keyCode === 13) {
 			enterGame();
 		}
-	})
-	document.getElementById('chat-form').addEventListener('keydown', function(e) {
-		if (e.keyCode == 13) {
+	});
+	$('#chat-form').on('keydown', function (e) {
+		if (e.keyCode === 13) {
 			sendChat();
 		}
-	})
+	});
 	ctx = canvas.getContext('2d');
-	canvas.addEventListener('mousemove', function(event) {
-		mousePos = getCursorPosition(event);
+	$('#gamecanvas').mousemove(function (e) {
+		mousePos = getCursorPosition(e);
 	});
 
-	canvas.addEventListener('mousedown', function(event) {
+	$('#gamecanvas').mousedown(function (e) {
 		if (!mouseDown) {
-			if (event.buttons == 1) {
+			if (e.buttons === 1) {
 				mouseDown = true;
-				socket.emit('mouse-down', mouseDown);
-			}else{
-				event.preventDefault();
+				socket.emit('mouse-down', mouseDown ? 1 : 0);
+			} else {
+				e.preventDefault();
 			}
 		}
 	});
-
-	canvas.addEventListener('mouseup', function(event) {
+	$('#gamecanvas').mouseup(function (e) {
 		if (mouseDown) {
 			mouseDown = false;
-			socket.emit('mouse-down', mouseDown);
+			socket.emit('mouse-down', mouseDown ? 1 : 0);
 		}
 	});
 
-	//Keyboard & Mouse input
+	// Keyboard & Mouse input
 
-	canvas.addEventListener('keydown', function(e) {
+	$('#gamecanvas').keydown(function (e) {
 		if (isPlaying && document.hasFocus()) {
-			if (e.keyCode == 87 || e.keyCode == 38) { //W
+			if (e.keyCode === 87 || e.keyCode === 38) { // W
 				if (!keyboardInput.moveUp) {
 					keyboardInput.moveUp = true;
-					socket.emit('move-up', true);
+					socket.emit('move-up', 1);
 				}
 			}
-			if (e.keyCode == 65 || e.keyCode == 37) { //A
+			if (e.keyCode === 65 || e.keyCode === 37) { // A
 				if (!keyboardInput.moveLeft) {
 					keyboardInput.moveLeft = true;
-					socket.emit('move-left', true);
+					socket.emit('move-left', 1);
 				}
 			}
-			if (e.keyCode == 83 || e.keyCode == 40) { //S
+			if (e.keyCode === 83 || e.keyCode === 40) { // S
 				if (!keyboardInput.moveDown) {
 					keyboardInput.moveDown = true;
-					socket.emit('move-down', true);
+					socket.emit('move-down', 1);
 				}
 			}
-			if (e.keyCode == 68 || e.keyCode == 39) { //D
+			if (e.keyCode === 68 || e.keyCode === 39) { // D
 				if (!keyboardInput.moveRight) {
 					keyboardInput.moveRight = true;
-					socket.emit('move-right', true);
+					socket.emit('move-right', 1);
 				}
 			}
-			if (e.keyCode == 9) { //D
+			if (e.keyCode === 9) { // D
 				showLeaderboard = true;
 				e.preventDefault();
 			}
-			if (e.keyCode == 69)	{ //E
+			if (e.keyCode === 69)	{ // E
 				socket.emit('use');
 			}
-			if (e.keyCode == 77)	{ //M
+			if (e.keyCode === 77)	{ // M
 				showMinimap = true;
 			}
-			if (e.keyCode == 81)	{ //Q
+			if (e.keyCode === 81)	{ // Q
 				// console.log(typeof curWeaponId);
 				if (weaponIds.length > curWeaponId + 1) {
 					socket.emit('swap-weapon', weaponIds[curWeaponId + 1]);
-				}else{
+				} else {
 					socket.emit('swap-weapon', weaponIds[0]);
 				}
 			}
@@ -255,36 +252,36 @@ $(document).ready(function () {
 			}
 		}
 	});
-	canvas.addEventListener('keyup', function(e) {
+	$('#gamecanvas').keyup(function (e) {
 		if (isPlaying && document.hasFocus()) {
-			if (e.keyCode == 87 || e.keyCode == 38) { //W
+			if (e.keyCode === 87 || e.keyCode === 38) { // W
 				if (keyboardInput.moveUp) {
 					keyboardInput.moveUp = false;
-					socket.emit('move-up', false);
+					socket.emit('move-up', 0);
 				}
 			}
-			if (e.keyCode == 65 || e.keyCode == 37) { //A
+			if (e.keyCode === 65 || e.keyCode === 37) { // A
 				if (keyboardInput.moveLeft) {
 					keyboardInput.moveLeft = false;
-					socket.emit('move-left', false);
+					socket.emit('move-left', 0);
 				}
 			}
-			if (e.keyCode == 83 || e.keyCode == 40) { //S
+			if (e.keyCode === 83 || e.keyCode === 40) { // S
 				if (keyboardInput.moveDown) {
 					keyboardInput.moveDown = false;
-					socket.emit('move-down', false);
+					socket.emit('move-down', 0);
 				}
 			}
-			if (e.keyCode == 68 || e.keyCode == 39) { //D
+			if (e.keyCode === 68 || e.keyCode === 39) { // D
 				if (keyboardInput.moveRight) {
 					keyboardInput.moveRight = false;
-					socket.emit('move-right', false);
+					socket.emit('move-right', 0);
 				}
 			}
-			if (e.keyCode == 9) { //D
+			if (e.keyCode === 9) { // D
 				showLeaderboard = false;
 			}
-			if (e.keyCode == 77)	{ //M
+			if (e.keyCode === 77)	{ // M
 				showMinimap = false;
 			}
 		}
@@ -299,28 +296,28 @@ var keyboardInput = {
 	moveLeft: false,
 	moveRight: false,
 	moveDown: false
-}
+};
 
-function addMessage(msg) {
+function addMessage (msg) {
 	document.getElementById('chat-ul').innerHTML += msg;
 	$('#chat-area').scrollTop($('#chat-area')[0].scrollHeight);
 }
 
-function showControls() {
-	addMessage('<u>Controls</u><br>WASD/Arrow Keys: Move<br>123456: Change Weapon<br>Q: Increment Weapon<br>E: Use (Opens doors)<br>TAB: Show Leaderboard')
+function showControls () {
+	addMessage('<u>Controls</u><br>WASD/Arrow Keys: Move<br>123456: Change Weapon<br>Q: Increment Weapon<br>E: Use (Opens doors)<br>TAB: Show Leaderboard');
 }
 
-function sendChat() {
+function sendChat () {
 	var msg = document.getElementById('chatInput').value;
 	document.getElementById('chatInput').value = '';
 	if (msg.substr(0, 1) === '!') {
-		//command
+		// command
 		socket.emit('send-command', msg.substr(1, msg.length));
-	}else{
+	} else {
 		socket.emit('send-chat-message', msg);
 	}
 }
-function preGameLoadUp() {
+function preGameLoadUp () {
 	canvas.focus();
 	socket.emit('request-map');
 	socket.emit('enter-game', document.getElementById('nameInput').value);
@@ -328,50 +325,59 @@ function preGameLoadUp() {
 	update();
 	ping();
 }
-function enterGame() {
+function enterGame () {
 	document.getElementById('input-div').style.display = 'none';
 	if (socket.connected) {
 		preGameLoadUp();
-	}else{
-		ctx.font='30pt Arial';
-		ctx.textAlign='center';
-		ctx.fillStyle='black';
+	} else {
+		ctx.font = '30pt Arial';
+		ctx.textAlign = 'center';
+		ctx.fillStyle = 'black';
 		ctx.fillText('Connecting...', canvas.width * 0.5, canvas.height * 0.5);
-		socket.onconnect=function (){
+		socket.onconnect = function () {
 			preGameLoadUp();
-		}
-		setTimeout(function (){
-			//Could not connect
+		};
+		setTimeout(function () {
+			// Could not connect
 			if (!socket.connected) {
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.fillStyle='red';
-				ctx.fillText('Could not connect!', canvas.width * 0.5, canvas.height * 0.5)
+				ctx.fillStyle = 'red';
+				ctx.fillText('Could not connect!', canvas.width * 0.5, canvas.height * 0.5);
 				socket.close();
 			}
-		}, 5000)
+		}, 5000);
 	}
 }
 
-socket.on('your-id', function(id) {
+socket.on('your-id', function (id) {
 	myId = id;
 });
-socket.on('get-chat-message', function(sentBy, msg) {
+socket.on('get-chat-message', function (sentBy, msg) {
 	if (playerListOpen[sentBy]) {
 		if (isPlaying) {
-			addMessage('<li><span style=\'color: ' + playerListOpen[sentBy].color + '\'>' + playerListOpen[sentBy].name + '</span>: ' + msg.replace(/</g, '&lt;').replace(/>/g, '&gt;')+ '</li>')
+			addMessage('<li><span style=\'color: ' + playerListOpen[sentBy].color + '\'>' + playerListOpen[sentBy].name + '</span>: ' + msg.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</li>');
 		}
 	}
-})
-socket.on('send-basic-player-info', function(data) {
+});
+socket.on('send-basic-player-info', function (data) {
 	playerListOpen = data;
 	for (var p in playerListOpen) {
 		playerListOpen[p].name = playerListOpen[p].name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 	generateLeaderboards();
-})
-socket.on('new-player', function (newPlayer) {
-	playerListOpen[newPlayer.id] = newPlayer;
-	playerListOpen[newPlayer.id].name = playerListOpen[newPlayer.id].name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+});
+socket.on('new-player', function (data) {
+	playerListOpen[data[1]] = {
+		name: data[0],
+		id: data[1],
+		color: data[2],
+		team: data[3],
+		score: 0,
+		kills: 0,
+		deaths: 0
+	};
+	var newPlayer = playerListOpen[data[1]];
+	newPlayer.name = newPlayer.name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	if (isPlaying) {
 		addMessage('<li><span style=\'color: ' + newPlayer.color + '\'>' + newPlayer.name + ' has connected!');
 	}
@@ -388,37 +394,64 @@ socket.on('delete-player', function (playerId) {
 });
 socket.on('send-secure-player-info', function (data) {
 	// "Uncompress" data so it is readable
+	playerListSecure = {};
 	for (var i in data) {
-		data[i].width = data[i].w; delete data[i].w;
-		data[i].height = data[i].ht; delete data[i].ht;
-		data[i].health = data[i].hl; delete data[i].hl;
-		data[i].isJihad = data[i].ij; delete data[i].ij;
-		data[i].isInvuln = data[i].ii; delete data[i].ii;
-		data[i].bonuses = data[i].b; delete data[i].b;
-		data[i].weapon = weaponIds[data[i].wp]; delete data[i].wp;
-		data[i].mouse = data[i].m; delete data[i].m;
+		playerListSecure[i] = {};
+		playerListSecure[i].x = data[i][0];
+		playerListSecure[i].y = data[i][1];
+		playerListSecure[i].width = data[i][2];
+		playerListSecure[i].height = data[i][3];
+		playerListSecure[i].health = data[i][4];
+		playerListSecure[i].isJihad = data[i][5];
+		playerListSecure[i].isInvuln = data[i][6];
+		playerListSecure[i].bonuses = {
+			speed: {
+				present: data[i][7][0]
+			},
+			damage: {
+				present: data[i][7][1]
+			}
+		};
+		playerListSecure[i].weapon = data[i][8];
+		playerListSecure[i].mouse = {
+			x: data[i][9][0],
+			y: data[i][9][1]
+		};
 		if (i === myId) {
-			data[i].canAttack = data[i].ca; delete data[i].ca;
-			data[i].alive = data[i].a; delete data[i].a;
-		}
-	}
-	playerListSecure = data;
-	for (var p in playerListSecure) {
-		playerListSecure[p].x = Math.round(playerListSecure[p].x);
-		playerListSecure[p].y = Math.round(playerListSecure[p].y);
+			playerListSecure[i].canAttack = data[i][10];
+			playerListSecure[i].alive = data[i][11];
+		};
 	}
 });
 socket.on('send-bullet-info', function (data) {
-	bullets = data;
+	bullets = [];
+	for (var i in data) {
+		bullets[i] = {};
+		bullets[i].x = data[i][0];
+		bullets[i].y = data[i][1];
+		bullets[i].weapon = weaponIds[data[i][2]];
+	}
 });
 socket.on('send-bonuses-info', function (data) {
-	bonuses = data;
+	bonuses = [];
+	for (var i in data) {
+		bonuses[i] = {
+			bonus: data[i][0],
+			x: data[i][1],
+			y: data[i][2],
+			width: data[i][3],
+			height: data[i][4]
+		};
+	}
 });
 socket.on('send-explosions-info', function (data) {
+	explosions = [];
 	for (var i in data) {
-		data[i].radius = data[i].r; delete data[i].r;
+		explosions[i] = {};
+		explosions[i].x = data[i][0];
+		explosions[i].y = data[i][1];
+		explosions[i].radius = data[i][2];
 	}
-	explosions = data;
 });
 socket.on('new-weapon', function (name) {
 	curWeaponId = 0;
@@ -430,29 +463,29 @@ socket.on('new-weapon', function (name) {
 		}
 	}
 });
-socket.on('send-map', function(name, map, extrMap, color, curGameMode) {
+socket.on('send-map', function (name, map, extrMap, color, curGameMode) {
 	gameMode = curGameMode;
 	minimapReady = false;
 	curMap.minimap = new Image();
-	curMap.minimap.src = '/assets/brashbrawl/minimaps/' + name + '.png'
+	curMap.minimap.src = '/assets/brashbrawl/minimaps/' + name + '.png';
 	curMap.minimap.onload = function () {
 		minimapReady = true;
-	}
+	};
 	curMap.map = map;
 	curMap.name = name;
 	curMap.bgcolor = color;
 	curMap.extrMap = extrMap;
 	mapReady = true;
 });
-socket.on('edit-extra', function(extraId, newExtra) {
+socket.on('edit-extra', function (extraId, newExtra) {
 	if (mapReady) {
 		curMap.extrMap[extraId].extra = newExtra;
 	}
-})
-socket.on('player-killed', function(killer, killed, weapon) {
+});
+socket.on('player-killed', function (killer, killed, weapon) {
 	if (playerListOpen[killer] && playerListOpen[killed]) {
-		var klr = '<span style=\'color:' + playerListOpen[killer].color + '\'>' + playerListOpen[killer].name + '</span>'
-		var kld = '<span style=\'color:' + playerListOpen[killed].color + '\'>' + playerListOpen[killed].name + '</span>'
+		var klr = '<span style=\'color:' + playerListOpen[killer].color + '\'>' + playerListOpen[killer].name + '</span>';
+		var kld = '<span style=\'color:' + playerListOpen[killed].color + '\'>' + playerListOpen[killed].name + '</span>';
 		weapon = weaponsList[weapon].name;
 
 		var text = '';
@@ -464,7 +497,7 @@ socket.on('player-killed', function(killer, killed, weapon) {
 			playerListOpen[killer].kills++;
 			teams[playerListOpen[killer].team].kills++;
 			playerListOpen[killer].score++;
-			var text = '';
+			text = '';
 			var type = Math.floor(Math.random() * 4);
 
 			if (type === 0) {
@@ -505,7 +538,7 @@ function generateLeaderboards () {
 
 function drawPlayers () {
 	for (var p in playerListSecure) {
-		if (p === myId && playerListSecure[myId].alive === false) {
+		if (p === myId && playerListSecure[myId].alive === 0) {
 		} else {
 			// Username
 			ctx.font = '11pt Arial';
@@ -542,7 +575,7 @@ function drawPlayers () {
 			ctx.globalAlpha = 1;
 			ctx.strokeStyle = 'black';
 			if (playerListSecure[p].bonuses.damage.present && playerListSecure[p].bonuses.speed.present) {
-				ctx.strokestyle = 'green'; // Green for speed and damage
+				ctx.strokeStyle = 'green'; // Green for speed and damage
 			} else if (playerListSecure[p].bonuses.damage.present) {
 				ctx.strokeStyle = 'blue'; // Blue for damage
 			} else if (playerListSecure[p].bonuses.speed.present) {
@@ -555,6 +588,7 @@ function drawPlayers () {
 }
 
 function drawExplosions () {
+	ctx.globalAlpha = 0.75;
 	for (var e = 0; e < explosions.length; e++) {
 		ctx.fillStyle = 'yellow';
 		ctx.strokeStyle = 'orange';
@@ -572,6 +606,7 @@ function drawExplosions () {
 		ctx.fill();
 		ctx.closePath();
 	}
+	ctx.globalAlpha = 1;
 }
 
 function drawBullets () {
@@ -820,7 +855,7 @@ function drawGuns () {
 				ctx.save();
 				ctx.translate(circle.x, circle.y);
 				ctx.rotate(degrees + 0.5 * Math.PI);
-				ctx.drawImage(weaponsList[playerListSecure[p].weapon].wpnSprite, -24, -24);
+				ctx.drawImage(weaponsList[weaponIds[playerListSecure[p].weapon]].wpnSprite, -24, -24);
 				ctx.restore();
 			}
 		}
@@ -842,7 +877,10 @@ function update () {
 		if (lastCursorPos.x !== mousePos.x || lastCursorPos.y !== mousePos.y) {
 			lastCursorPos.x = mousePos.x;
 			lastCursorPos.y = mousePos.y;
-			socket.emit('new-mouse-pos', mousePos);
+			socket.emit('new-mouse-pos', [
+				mousePos.x,
+				mousePos.y
+			]);
 		}
 	}
 	// All things that are translated go here
@@ -853,11 +891,11 @@ function update () {
 		drawMap();
 		drawExtras();
 	}
+	drawBonuses();
 	drawBullets();
 	drawPlayers();
 	drawGuns();
 	drawExplosions();
-	drawBonuses();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	// All things that aren't translated go here
@@ -903,5 +941,5 @@ function ping () {
 }
 socket.on('peng', function () {
 	latency = Date.now() - pingTime;
-	setTimeout(ping, 750);
+	setTimeout(ping, 1000);
 });

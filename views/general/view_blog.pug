@@ -1,0 +1,10 @@
+extends ../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle("Home")
+
+block content
+	h1!=blog.title
+	p.dateGrey.formatDate!=blog.date
+	hr
+	div!=blog.content

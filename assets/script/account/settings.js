@@ -1,66 +1,39 @@
 /* global $ */
 
-// Taken from
-var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 $(document).ready(function () {
 	$('form').on('submit', validateForm);
-
-	$('#user').on('input', checkUser);
-	$('#email').on('input', checkEmail);
-	$('#pass').on('input', checkPassword);
-	$('#pass2').on('input', checkPassword);
+	$('#newpass').on('input', checkPasswords);
+	$('#newpass2').on('input', checkPasswords);
 });
 
 function validateForm (e) {
 	$('.errorLabel').addClass('hidden'); // Remove all error labels
 	$('.formError').removeClass('formError'); // Remove all error indicators
 
-	return checkUser() && checkPassword() && checkEmail();
+	return checkPasswords();
 }
 
-function checkUser () {
-	var user = $('#user').val();
-	$('#user1').addClass('hidden');
-	$('#user2').addClass('hidden');
-	$('#user').removeClass('formError');
-
-	if (user.length === 0 || user.length > 20) {
-		$('#user1').removeClass('hidden');
-		$('#user').addClass('formError');
-		return false;
-	}
-
-	var userRegex = /^([a-zA-Z0-9._!\-@#$%^&*()])+$/;
-	console.log('test: ' + userRegex.test(user));
-	if (!userRegex.test(user)) {
-		$('#user2').removeClass('hidden');
-		$('#user').addClass('formError');
-		return false;
-	}
-	return true;
-}
-
-function checkPassword () {
-	var pass = $('#pass').val();
-	var pass2 = $('#pass2').val();
+function checkPasswords () {
+	var pass = $('#newpass').val();
+	var pass2 = $('#newpass2').val();
 
 	var cont = true;
-	$('.errorLabel[for=\'pass\']').addClass('hidden');
-	$('.errorLabel[for=\'pass2\']').addClass('hidden');
-	$('#pass').removeClass('formError');
-	$('#pass2').removeClass('formError');
+
+	$('.errorLabel[for=\'newpass\']').addClass('hidden');
+	$('.errorLabel[for=\'newpass2\']').addClass('hidden');
+	$('#newpass').removeClass('formError');
+	$('#newpass2').removeClass('formError');
 
 	if (pass !== pass2) {
 		cont = false;
-		$('.errorLabel[for=\'pass2\']').removeClass('hidden');
-		$('#pass2').addClass('formError');
+		$('.errorLabel[for=\'newpass2\']').removeClass('hidden');
+		$('#newpass2').addClass('formError');
 	}
 	if (pass.length < 6 || pass.length > 512) {
 		cont = false;
 		$('#passRecsDiv').addClass('hidden');
-		$('.errorLabel[for=\'pass\']').removeClass('hidden');
-		$('#pass').addClass('formError');
+		$('.errorLabel[for=\'newpass\']').removeClass('hidden');
+		$('#newpass').addClass('formError');
 	} else {
 		$('#passRecsDiv').removeClass('hidden');
 	}
@@ -127,16 +100,4 @@ function checkPassword () {
 	}
 
 	return cont;
-}
-
-function checkEmail () {
-	var email = $('#email').val();
-	$('.errorLabel[for=\'email\']').addClass('hidden');
-	$('#email').removeClass('formError');
-
-	if (!emailRegex.test(email)) {
-		$('.errorLabel[for=\'email\']').removeClass('hidden');
-		$('#email').addClass('formError');
-	}
-	return true;
 }

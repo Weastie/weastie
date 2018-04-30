@@ -1,0 +1,22 @@
+extends ../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle('Blogs')
+	style.
+		.blogDiv {
+			border: 1px solid darkblue;
+			border-radius: 10px;
+			padding: 20px;
+			margin: 15px 0px;
+		}
+		.blogDiv a {
+			font-size: 1.2em;
+		}
+
+block content
+	h1 Blogs
+	each blog in blogs
+		div.blogDiv
+			a(href=('/blog/' + global.essentials.convertID(blog._id)))!=blog.title
+			br
+			span.formatDate.dateGrey!=blog.date
