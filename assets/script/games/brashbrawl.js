@@ -387,9 +387,6 @@ socket.on('delete-player', function (playerId) {
 	generateLeaderboards();
 });
 socket.on('send-secure-player-info', function (data) {
-	if (Math.random() > 0.98) {
-		console.log('BYTES: ' + JSON.stringify(data).length);
-	}
 	// "Uncompress" data so it is readable
 	for (var i in data) {
 		data[i].width = data[i].w; delete data[i].w;
@@ -510,10 +507,15 @@ function drawPlayers () {
 	for (var p in playerListSecure) {
 		if (p === myId && playerListSecure[myId].alive === false) {
 		} else {
-			// Fill text
+			// Username
 			ctx.font = '11pt Arial';
-			ctx.fillStyle = 'black';
 			ctx.textAlign = 'center';
+			ctx.fillStyle = 'white';
+			ctx.globalAlpha = 0.75;
+			var nameLength = ctx.measureText(playerListOpen[p].name).width;
+			ctx.fillRect(playerListSecure[p].x + playerListSecure[p].width * 0.5 - nameLength * 0.5 - 2, playerListSecure[p].y - 32, nameLength + 5, 14);
+			ctx.globalAlpha = 1;
+			ctx.fillStyle = 'black';
 			ctx.fillText(playerListOpen[p].name, playerListSecure[p].x + playerListSecure[p].width * 0.5, playerListSecure[p].y - 20);
 
 			// Fill player health bar
@@ -710,18 +712,51 @@ function drawWeaponHud () {
 	ctx.strokeStyle = 'brown';
 	ctx.lineWidth = 1;
 	ctx.fillStyle = 'tan';
-	ctx.fillRect(0, canvas.height - 35, 200, 35);
-	ctx.strokeRect(0, canvas.height - 35, 200, 35);
-	ctx.textAlign = 'center';
+	ctx.font = '18pt Arial';
+	var nameLength = ctx.measureText(weaponsList[curWeapon].name).width;
+	ctx.fillRect(0, canvas.height - 35, nameLength + 20, 35);
+	ctx.strokeRect(0, canvas.height - 35, nameLength + 20, 35);
+	ctx.textAlign = 'left';
 	ctx.fillStyle = 'red';
 	if (playerListSecure[myId].canAttack) {
 		ctx.fillStyle = 'green';
 	}
-	ctx.font = '18pt Arial';
-	ctx.fillText(weaponsList[curWeapon].name, 100, canvas.height - 7);
+	ctx.fillText(weaponsList[curWeapon].name, 10, canvas.height - 7);
 
+	var counter = 0;
+	var boxLength = 52;
+	var offset = 8;
+	var start = canvas.width / 2 - ((boxLength + offset) * weaponIds.length) / 2;
+
+	ctx.font = '10pt Arial';
+	ctx.textAlign = 'left';
+	for (var w in weaponsList) {
+		ctx.globalAlpha = 0.8;
+		ctx.fillStyle = '#878787';
+		ctx.fillRect(start + counter * (boxLength + offset), 0, boxLength, boxLength);
+		if (w === curWeapon) {
+			ctx.strokeStyle = 'blue';
+		} else {
+			ctx.strokeStyle = '#696969';
+		}
+		ctx.lineWidth = 2;
+		ctx.strokeRect(start + counter * (boxLength + offset), 0, boxLength, boxLength);
+
+		ctx.globalAlpha = 1;
+		ctx.fillStyle = 'black';
+		ctx.fillText(counter + 1, start + counter * (boxLength + offset) + 1, 11);
+		if (w === 'jihad') {
+			// Jihad sprite is already centered
+			ctx.drawImage(weaponsList[w].wpnSprite, start + counter * (boxLength + offset) + 2, 0);
+		} else {
+			ctx.drawImage(weaponsList[w].wpnSprite, start + counter * (boxLength + offset) + 2, 12);
+		}
+		counter++;
+	}
+
+	/*
 	// Top middle
-	ctx.globalAlpha = 0.6;
+	ctx.globalAlpha = 0.75;
 	ctx.strokeStyle = '#272a2a';
 	ctx.lineWidth = 2;
 	ctx.fillStyle = '#b1b0b3';
@@ -741,13 +776,14 @@ function drawWeaponHud () {
 			if (w === curWeapon) {
 				ctx.fillStyle = 'teal';
 			}
-			ctx.fillText(counter + ':' + weaponsList[w].name, 70 + counterX * 125, counterY * 18);
+			ctx.fillText(counter + ' - ' + weaponsList[w].name, 70 + counterX * 125, counterY * 18);
 			if (counterX % 4 === 0) {
 				counterX = 0;
 				counterY++;
 			}
 		}
 	}
+	*/
 }
 
 function drawMiniMap () {

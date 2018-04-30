@@ -13,7 +13,7 @@ block content
 		input(type="text" placeholder="Enter a name" maxlength="18" id="nameInput")
 		input(type="button" onclick="enterGame()" value="Play!" draggable="false" id="button1")
 		input(type="button" onclick="showControls()" value="Controls" draggable="false" id="button2")
-	div(align="center")
+	div(align="center",style='white-space: nowrap')
 		canvas(id="gamecanvas",width="800",height="600",style="display: inline-block",tabindex="0",oncontextmenu="return false;")
 		div(tabindex='1')#chat-div
 			div#chat-area
