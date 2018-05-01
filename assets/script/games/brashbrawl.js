@@ -433,7 +433,6 @@ socket.on('send-bullet-info', function (data) {
 	}
 });
 socket.on('send-bonuses-info', function (data) {
-	bonuses = [];
 	for (var i in data) {
 		bonuses[i] = {
 			bonus: data[i][0],
@@ -443,6 +442,7 @@ socket.on('send-bonuses-info', function (data) {
 			height: data[i][4]
 		};
 	}
+	console.log(bonuses);
 });
 socket.on('send-explosions-info', function (data) {
 	explosions = [];
@@ -620,6 +620,7 @@ function drawBullets () {
 function drawBonuses () {
 	if (numBonuses === numBonusesLoaded) {
 		for (var b = 0; b < bonuses.length; b++) {
+			console.log(bonuses[b]);
 			ctx.drawImage(bonusesList[bonuses[b].bonus].sprite, bonuses[b].x, bonuses[b].y);
 		}
 	}
@@ -934,7 +935,7 @@ function getCursorPosition (event) {
 	};
 };
 
-// These fuckers made a built in function for ping and pong, so i have to rename it.
+// There is a built in ping and pong method, but we wrote our own.
 function ping () {
 	pingTime = Date.now();
 	socket.emit('pang');
