@@ -1,6 +1,6 @@
 [![js-happiness-style](https://cdn.rawgit.com/JedWatson/happiness/master/badge.svg)](https://github.com/JedWatson/happiness)
 
-##Weastie.com web server
+## Weastie.com web server
 
 Main dependencies:
 * Backend: Node.js with Express
