@@ -10,14 +10,14 @@ block content
 	h1.centerText Brash Brawl
 	div#input-div.hidden
 		h1 Welcome to Brash Brawl!
-		input(type="text" placeholder="Enter a name" maxlength="18" id="nameInput")
-		input(type="button" onclick="enterGame()" value="Play!" draggable="false" id="button1")
-		input(type="button" onclick="showControls()" value="Controls" draggable="false" id="button2")
-	div(align="center",style='white-space: nowrap')
-		canvas(id="gamecanvas",width="800",height="600",style="display: inline-block",tabindex="0",oncontextmenu="return false;")
-		div(tabindex='1')#chat-div
+		input(type="text" placeholder="Enter a name" maxlength="18" id="nameInput" tabindex="1")
+		input(type="button" onclick="enterGame()" value="Play!" draggable="false" id="button1" tabindex="2")
+		input(type="button" onclick="showControls()" value="Controls" draggable="false" id="button2" tabindex="3")
+	div(align="center")#chat-container
+		canvas(id="gamecanvas",width="800",height="600",style="display: inline-block",oncontextmenu="return false;" tabindex="6")
+		div(tabindex="7")#chat-div
 			div#chat-area
 				div#chat-ul
 			div#chat-form
-				input(type="text" placeholder="Enter a message" id="chatInput")
+				input(type="text" placeholder="Enter a message" id="chatInput" tabindex='4')
 				input(type="button" onclick="sendChat()" value="Send" draggable="false" id="chatButton")
