@@ -238,7 +238,6 @@ $(document).ready(function () {
 				showMinimap = true;
 			}
 			if (e.keyCode === 81)	{ // Q
-				// console.log(typeof curWeaponId);
 				if (weaponIds.length > curWeaponId + 1) {
 					socket.emit('swap-weapon', weaponIds[curWeaponId + 1]);
 				} else {
@@ -433,6 +432,7 @@ socket.on('send-bullet-info', function (data) {
 	}
 });
 socket.on('send-bonuses-info', function (data) {
+	bonuses = [];
 	for (var i in data) {
 		bonuses[i] = {
 			bonus: data[i][0],
@@ -442,7 +442,6 @@ socket.on('send-bonuses-info', function (data) {
 			height: data[i][4]
 		};
 	}
-	console.log(bonuses);
 });
 socket.on('send-explosions-info', function (data) {
 	explosions = [];
@@ -620,7 +619,6 @@ function drawBullets () {
 function drawBonuses () {
 	if (numBonuses === numBonusesLoaded) {
 		for (var b = 0; b < bonuses.length; b++) {
-			console.log(bonuses[b]);
 			ctx.drawImage(bonusesList[bonuses[b].bonus].sprite, bonuses[b].x, bonuses[b].y);
 		}
 	}

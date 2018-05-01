@@ -76,11 +76,15 @@ body {
   margin: 0px;
   padding: 0px;
   display: block;
-  width: 100%;
   height: 95%;
-  overflow-y: auto;
+	width: 260px;
   border-bottom: 1px solid black;
+	overflow-y: auto;
+	overflow-x: visible;
+}
+#chat-area * {
 	word-wrap: normal;
+	white-space: normal;
 }
 #chat-ul {
   background-color: white;
