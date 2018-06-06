@@ -32,9 +32,22 @@ var eventTimer;
 var eventsText;
 var firstNames = ['Bradley', 'Andrew', 'Ryan', 'Axel', 'Mahek', 'Sal', 'Kirsten'];
 var lastNames = ['Marx', 'Hitler', 'Stalin', 'Putin', 'Mussolini', 'Trump', 'Clinton', 'Sanders'];
-var goodEvents = ['#{media} news just covered you in good light!', 'Politician #{name} endorsed you!'];
-var badEvents = ['#{media} just covered a protest against you!', 'Politician #{name} protested against you!'];
-var newsStations = ['Not Fake News™', 'Jeb\'s Mom\'s Favorite Son\'s News™', 'Covfefe News™', 'As accurate at Bradley Seltzer\'s Deadlines News™'];
+var goodEvents = [
+	'#{media} news just covered you in good light!',
+	'Politician #{name} endorsed you!',
+	'Your opponent, #{name}, was caught speaking with Russians!'
+];
+var badEvents = [
+	'#{media} just covered a protest against you!',
+	'Politician #{name} protested against you!',
+	'Your supporter, #{name}, just asked for two cones of ice cream.'
+];
+var newsStations = [
+	'Not Fake News™',
+	'Jeb\'s Mom\'s Favorite Son\'s News™',
+	'Covfefe News™',
+	'As accurate at Bradley Seltzer\'s Deadlines News™'
+];
 // Events being random was far too random. So I made them determined
 // 1 is a good thing, 0 is a bad thing
 var eventID = 1;
@@ -43,6 +56,7 @@ var billSpeed = 250;
 
 States.house.prototype = {
 	create: function () {
+		eventID = 0;
 		game.add.sprite(0, 0, 'bg').alpha = 0.05;
 		game.time.events.start();
 
@@ -256,7 +270,7 @@ function newEvent () {
 		text = game.rnd.pick(goodEvents);
 	} else {
 		// Bad thing
-		spawnObstacles(5);
+		spawnObstacles(game.rnd.integerInRange(4, 5));
 		style.fill = '#7c0016';
 		text = game.rnd.pick(badEvents);
 	}
