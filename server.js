@@ -356,11 +356,15 @@ app.post('/admin/upload_blog', function (req, res) {
 
 // Games
 app.get('/games', function (req, res) {
-	res.end('not implememted');
+	renderTempl('games/games', req, res);
 });
 
 app.get('/games/brashbrawl', function (req, res) {
 	renderTempl('games/brashbrawl', req, res);
+});
+
+app.get('/games/become_a_law', function (req, res) {
+	renderTempl('games/become_a_law', req, res);
 });
 
 // Given an object with properties, make sure each property is of correct type

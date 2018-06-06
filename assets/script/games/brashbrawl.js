@@ -5,6 +5,8 @@ var ctx;
 var myId;
 var isPlaying = false;
 var latency = 0;
+var frames = 0;
+var fps = 0;
 var pingTime = 0;
 var tiles = [null];
 var extras = [null];
@@ -679,9 +681,10 @@ function drawExtras () {
 
 function drawPing () {
 	ctx.fillStyle = 'black';
-	ctx.font = '12pt Arial';
+	ctx.font = '11pt Arial';
 	ctx.textAlign = 'left';
 	ctx.fillText('Latency: ' + latency + 'ms', 60, 570);
+	ctx.fillText('FPS: ' + fps, 60, 583);
 }
 
 function drawLeaderboard () {
@@ -862,6 +865,7 @@ function drawGuns () {
 }
 
 function update () {
+	frames += 1;
 	if (mapReady) {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = curMap.bgcolor;
@@ -942,3 +946,8 @@ socket.on('peng', function () {
 	latency = Date.now() - pingTime;
 	setTimeout(ping, 1000);
 });
+// Calculate FPS
+setInterval(function () {
+	fps = frames;
+	frames = 0;
+}, 1000);
