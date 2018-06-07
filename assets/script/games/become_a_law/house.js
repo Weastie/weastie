@@ -56,7 +56,7 @@ var billSpeed = 250;
 
 States.house.prototype = {
 	create: function () {
-		eventID = 0;
+		eventID = 1;
 		game.add.sprite(0, 0, 'bg').alpha = 0.05;
 		game.time.events.start();
 
@@ -256,7 +256,7 @@ function flashColor (color, opt) {
 }
 
 function newEvent () {
-	var magnitude = game.rnd.integerInRange(25, 32);
+	var magnitude = game.rnd.integerInRange(28, 34);
 	var text;
 	var style = {
 		fontSize: 14,
