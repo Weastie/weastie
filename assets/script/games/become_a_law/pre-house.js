@@ -7,7 +7,7 @@ States.preHouse.prototype = {
 								'Only 1/3rd of the house currently supports you.\n' +
 								'Collect blue and red dots to gain Republican and Democrat votes.\n' +
 								'Avoid yellow squares! You will lose some support from both houses.\n' +
-								'Votes and squares expire after 45 seconds.\n' +
+								'Votes and squares expire after 40 seconds.\n' +
 								'If you drop below 30% of the vote, you will lose.\n\n' +
 								'Use WASD or arrow keys to navigate the map.';
 		game.add.graphics(40, 40)

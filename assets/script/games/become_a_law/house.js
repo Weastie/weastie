@@ -9,7 +9,7 @@ var houseVotesText;
 var repubProgBar;
 var democProgBar;
 var houseProgBar;
-var dotSurvivalLength = 45;
+var dotSurvivalLength = 40;
 var votes = {
 	repub: {
 		total: 0,
@@ -191,8 +191,8 @@ States.house.prototype = {
 			flashColor(b.fillColor, democVotesText);
 			flashColor(b.fillColor, repubVotesText);
 			flashColor(b.fillColor, houseVotesText);
-			votes.repub.current -= game.rnd.integerInRange(3, 8);
-			votes.democ.current -= game.rnd.integerInRange(3, 8);
+			votes.repub.current -= game.rnd.integerInRange(3, 9);
+			votes.democ.current -= game.rnd.integerInRange(3, 9);
 			houseProgBar.scale.x = (votes.repub.current + votes.democ.current) / votes.total;
 			repubProgBar.scale.x = votes.repub.current / votes.repub.total;
 			democProgBar.scale.x = votes.democ.current / votes.democ.total;
@@ -256,7 +256,7 @@ function flashColor (color, opt) {
 }
 
 function newEvent () {
-	var magnitude = game.rnd.integerInRange(28, 34);
+	var magnitude = game.rnd.integerInRange(27, 33);
 	var text;
 	var style = {
 		fontSize: 14,
@@ -270,7 +270,7 @@ function newEvent () {
 		text = game.rnd.pick(goodEvents);
 	} else {
 		// Bad thing
-		spawnObstacles(game.rnd.integerInRange(4, 5));
+		spawnObstacles(game.rnd.integerInRange(3, 5));
 		style.fill = '#7c0016';
 		text = game.rnd.pick(badEvents);
 	}
