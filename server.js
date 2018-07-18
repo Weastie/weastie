@@ -94,7 +94,7 @@ jsonReader.jsonObject('./private.json', function (err, data) {
 		db.createCollection('listeners', function (err, collection) {
 			assert.equal(null, err, 'Error: failed to open \'listeners\' collection: ' + err);
 			mCols.listeners = collection;
-			mCols.listeners.createIndex({'createdAt': 1}, {expireAfterSeconds: 3600});
+			mCols.listeners.createIndex({'createdAt': 1}, {expireAfterSeconds: 3600 * 48});
 		});
 
 		console.log('Successfully connected to database...');
@@ -391,6 +391,7 @@ app.get('/hack_tools/listener/:_id', function (req, res) {
 	mCols.listeners.findOne({_id: id}, function (err, doc) {
 		assert.equal(err, null, 'Error when searching for listener (1): ' + err);
 		if (doc) {
+			// Show most recent requests first
 			doc.requests.sort(function (a, b) {
 				return b.date - a.date;
 			});
@@ -409,6 +410,7 @@ app.all(['/l/:_id', '/l/:_id/*'], function (req, res) {
 			var info = {
 				date: Date.now(),
 				method: req.method,
+				ip: req.ip,
 				path: req.path,
 				body: req.body
 			};
@@ -430,7 +432,7 @@ app.post('/hack_tools/create_listener', function (req, res) {
 		} else {
 			mCols.listeners.insertOne({
 				_id: id,
-				createdAt: Date.now(),
+				createdAt: new Date(),
 				requests: []
 			}, function (err) {
 				assert.equal(err, null, 'Error creating listener: ' + err);
