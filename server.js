@@ -30,7 +30,8 @@ var bodyParser = require('body-parser');
 // const formidable = require('formidable');
 // Manage file system
 const fs = require('fs');
-// const path = require('path');
+const path = require('path');
+global.path = path;
 // const mv = require('mv');
 // HTTP or HTTPS
 var http = require('http');
@@ -89,6 +90,11 @@ jsonReader.jsonObject('./private.json', function (err, data) {
 		db.createCollection('blogs', function (err, collection) {
 			assert.equal(null, err, 'Error: failed to open \'blogs\' collection: ' + err);
 			mCols.blogs = collection;
+		});
+		db.createCollection('listeners', function (err, collection) {
+			assert.equal(null, err, 'Error: failed to open \'listeners\' collection: ' + err);
+			mCols.listeners = collection;
+			mCols.listeners.createIndex({'createdAt': 1}, {expireAfterSeconds: 3600});
 		});
 
 		console.log('Successfully connected to database...');
@@ -365,6 +371,73 @@ app.get('/games/brashbrawl', function (req, res) {
 
 app.get('/games/become_a_law', function (req, res) {
 	renderTempl('games/become_a_law', req, res);
+});
+
+app.get('/games/box', function (req, res) {
+	renderTempl('games/box', req, res);
+});
+
+// Hack Tools
+app.get('/hack_tools', function (req, res) {
+	renderTempl('hacktools/main', req, res);
+});
+
+app.get('/hack_tools/listener', function (req, res) {
+	renderTempl('hacktools/listener/setup', req, res);
+});
+
+app.get('/hack_tools/listener/:_id', function (req, res) {
+	var id = global.essentials.convertID(req.params._id);
+	mCols.listeners.findOne({_id: id}, function (err, doc) {
+		assert.equal(err, null, 'Error when searching for listener (1): ' + err);
+		if (doc) {
+			doc.requests.sort(function (a, b) {
+				return b.date - a.date;
+			});
+			renderTempl('hacktools/listener/listener', req, res, {data: doc, id: req.params._id});
+		} else {
+			renderTempl('core/result', req, res, {error: true, text: 'Could not find a listener with the id: ' + req.params._id});
+		}
+	});
+});
+
+app.all(['/l/:_id', '/l/:_id/*'], function (req, res) {
+	var id = global.essentials.convertID(req.params._id);
+	mCols.listeners.findOne({_id: id}, function (err, doc) {
+		assert.equal(err, null, 'Error when searching for listener (2): ' + err);
+		if (doc) {
+			var info = {
+				date: Date.now(),
+				method: req.method,
+				path: req.path,
+				body: req.body
+			};
+			mCols.listeners.update({_id: id}, {$push: {requests: info}});
+			res.redirect('/');
+		} else {
+			res.redirect('/');
+		}
+	});
+});
+
+app.post('/hack_tools/create_listener', function (req, res) {
+	var id = generateID(4);
+	mCols.listeners.findOne({_id: id}, function (err, doc) {
+		// Make sure that the listener does not currently exist
+		assert.equal(err, null, 'Error checking if listener exists: ' + err);
+		if (doc) {
+			res.end('Something super duper rare happened! Try again please...');
+		} else {
+			mCols.listeners.insertOne({
+				_id: id,
+				createdAt: Date.now(),
+				requests: []
+			}, function (err) {
+				assert.equal(err, null, 'Error creating listener: ' + err);
+				res.redirect(path.join('/hack_tools/listener/', global.essentials.convertID(id)));
+			});
+		}
+	});
 });
 
 // Given an object with properties, make sure each property is of correct type

@@ -16,6 +16,8 @@ html
 					a(href='/blogs') Blogs
 				li
 					a(href='/games') Games
+				li
+					a(href='/hack_tools') Hack Tools
 				if sess.loggedIn
 					li
 						a(href=('/' + sess.username))=sess.username
@@ -48,6 +50,8 @@ html
 								a(href='/blogs') Blogs
 							li
 								a(href='/games/') Games
+							li
+								a(href='/hack_tools') Hack Tools
 							//- Right side of nav bar
 							div.floatRight
 								if sess.loggedIn

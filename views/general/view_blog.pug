@@ -1,7 +1,7 @@
 extends ../core/template.pug
 
 block headExtra
-	title=global.essentials.formatTitle("Home")
+	title=global.essentials.formatTitle(['Blog', blog.title])
 
 block content
 	h1!=blog.title

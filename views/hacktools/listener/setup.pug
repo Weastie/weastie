@@ -1,0 +1,25 @@
+extends ../../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle(['Hack Tools', 'Listener'])
+
+block content
+	h1 HTTP Request Listener
+	p 
+		| Creates a temporary URL that will listen to all HTTP requests and log them.
+		| This is useful for an XSS attack where a user's cookies can be sent to a URL.
+	p
+		| The URL can receive all types of HTTP methods: GET, POST, DELETE, etc.
+	hr
+	p
+		| Clicking the "Create Listener" button will create a temporary URL with the format of:
+	p(style='margin-left: 30px') //weastie.com/l/{some short id}.
+	p Any HTTP request to that URL will be logged to:
+	p(style='margin-left: 30px') //weastie.com/hack_tools/listener/{same short id}.
+	p Any user that visits the listening url will simply be redirected to the home page of Weastie.com
+	hr
+	p The listener will expire after 1 hour. Feel free to create another one after expiration.
+		
+	form(action='/hack_tools/create_listener', method='POST').styledForm
+		input(type='submit', value='Create a listener').btn.btnRed.btnRaised
+	
