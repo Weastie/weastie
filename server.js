@@ -117,6 +117,11 @@ var render404 = function (req, res) {
 	renderTempl('core/result', req, res, {error: true, text: 'Error 404: Page not found'});
 };
 
+// Robots.txt - Allow all robots
+app.get('/robots.txt', function (req, res) {
+	res.end('User-agent: *\nDisallow:\n');
+});
+
 /*
  * General Pages
  */
@@ -379,11 +384,11 @@ app.get('/games/box', function (req, res) {
 
 // Hack Tools
 app.get('/hack_tools', function (req, res) {
-	renderTempl('hacktools/main', req, res);
+	renderTempl('hack_tools/main', req, res);
 });
 
 app.get('/hack_tools/listener', function (req, res) {
-	renderTempl('hacktools/listener/setup', req, res);
+	renderTempl('hack_tools/listener/setup', req, res);
 });
 
 app.get('/hack_tools/listener/:_id', function (req, res) {
@@ -395,7 +400,7 @@ app.get('/hack_tools/listener/:_id', function (req, res) {
 			doc.requests.sort(function (a, b) {
 				return b.date - a.date;
 			});
-			renderTempl('hacktools/listener/listener', req, res, {data: doc, id: req.params._id});
+			renderTempl('hack_tools/listener/listener', req, res, {data: doc, id: req.params._id});
 		} else {
 			renderTempl('core/result', req, res, {error: true, text: 'Could not find a listener with the id: ' + req.params._id});
 		}
@@ -440,6 +445,10 @@ app.post('/hack_tools/create_listener', function (req, res) {
 			});
 		}
 	});
+});
+
+app.get('/hack_tools/converter', function (req, res) {
+	renderTempl('hack_tools/converter', req, res);
 });
 
 // Given an object with properties, make sure each property is of correct type

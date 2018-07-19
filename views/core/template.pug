@@ -4,6 +4,7 @@ html
 	head
 		meta(name='viewport',content='width=device-width,initial-scale=1')
 		meta(charset='UTF-8')
+		meta(name='author', content='Weastie')
 		link(rel="icon",href="/assets/img/favicon.ico",type="image/x-icon")
 		script(src='/assets/script/core/jquery-3.2.1.min.js')
 		link(rel='stylesheet',href='/assets/css/compiled/main.css')
@@ -16,6 +17,8 @@ html
 					a(href='/blogs') Blogs
 				li
 					a(href='/games') Games
+				li
+					a(href='https://www.youtube.com/channel/UCsA9BVmiT0sG4d6cwBzpM6Q') Youtube
 				li
 					a(href='/hack_tools') Hack Tools
 				if sess.loggedIn
@@ -49,7 +52,9 @@ html
 							li
 								a(href='/blogs') Blogs
 							li
-								a(href='/games/') Games
+								a(href='/games') Games
+							li
+								a(href='https://www.youtube.com/channel/UCsA9BVmiT0sG4d6cwBzpM6Q') Youtube
 							li
 								a(href='/hack_tools') Hack Tools
 							//- Right side of nav bar

@@ -7,6 +7,7 @@ module.exports.formatTitle = function (words) {
 	if (typeof words === 'string') {
 		words = [words];
 	}
+	words.reverse();
 	var result = '';
 	for (var i in words) {
 		result += words[i] + ' | ';

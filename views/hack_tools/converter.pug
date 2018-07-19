@@ -1,0 +1,69 @@
+extends ../core/template.pug
+
+block headExtra
+	title=global.essentials.formatTitle(['Hack Tools', 'Base Converter'])
+	meta(name='description', content='Base converter. Works with Asciii, Base 64, Hex, Octal, Binary, Decimal')
+	script(src='/assets/script/hack_tools/converter.js')
+	style.
+		.baseBlock {
+			border-radius: 10px;
+			border: 1px solid black;
+			display: inline-block;
+			width: 300px;
+			height: 300px;
+			margin-right: 25px;
+			margin-bottom: 25px;
+		}
+		.baseBlock h3 {
+			text-align: center;
+			margin: 2px;
+		}
+		.baseBlock textarea, .baseBlock input {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		}
+		.buttonGroup * {
+			margin-left: 5px !important;
+			margin-right: 5px !important;
+			display: inline-block !important;
+		}
+
+block content
+	h1 Base Converter
+	p Separate a series of numbers by spaces
+	p * Numbers are expected to be whole numbers
+	div(align='center')
+		div.baseBlock
+			h3 Ascii (UTF-8)
+			textarea(cols='35', rows='13', placeholder='Ascii...')#base_asc
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn
+		div.baseBlock
+			h3 Binary (Base 2)
+			textarea(cols='35', rows='13', placeholder='Binary...')#base_bin
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn
+				input(type='button', value='Split').btn.btnRed.btnRaised.splitBtn
+		div.baseBlock
+			h3 Octal (Base 8)
+			textarea(cols='35', rows='13', placeholder='Octal...')#base_oct
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn
+				input(type='button', value='Split').btn.btnRed.btnRaised.splitBtn
+		div.baseBlock
+			h3 Decimal (Base 10)
+			textarea(cols='35', rows='13', placeholder='Decimal...')#base_dec
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn
+		div.baseBlock
+			h3 Hex (Base 16)
+			textarea(cols='35', rows='13', placeholder='Hex...')#base_hex
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn
+				input(type='button', value='Split').btn.btnRed.btnRaised.splitBtn
+		div.baseBlock
+			h3 Base 64
+			textarea(cols='35', rows='13', placeholder='Base 64...')#base_64
+			div.buttonGroup
+				input(type='button', value='Convert').btn.btnBlue.btnRaised.convertBtn

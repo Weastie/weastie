@@ -2,9 +2,12 @@ extends ../core/template.pug
 
 block headExtra
 	title=global.essentials.formatTitle('Hack Tools')
+	meta(name='description', content='Some useful tools for hacking')
 
 block content
 	h1 Hack Tools
 	ul
 		li
 			a(href='/hack_tools/listener') HTTP Request Listener
+		li
+			a(href='/hack_tools/converter') Base Converter
