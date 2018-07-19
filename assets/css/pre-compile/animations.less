@@ -10,24 +10,32 @@
 .hide {
   animation: hide 0.35s ease-in-out forwards;
 }
-.drawerAppear {
-  animation: drawerAppear 0.25s ease-in-out forwards;
-}
-.drawerHide {
-  animation: drawerHide 0.25s ease-in-out forwards;
-}
+// .drawerAppear {
+//   animation: drawerAppear 0.25s ease-in-out forwards;
+// }
+// .drawerHide {
+//   animation: drawerHide 0.25s ease-in-out forwards;
+// }
 .fadeOutHalf {
   animation: fadeOutHalf 0.25s ease-in-out forwards;
 }
 .fadeIn {
   animation: fadeIn 0.25s ease-in-out forwards;
 }
-.toBlack {
-  animation: toBlack 0.25s ease-in-out forwards;
+// .toBlack {
+//   animation: toBlack 0.25s ease-in-out forwards;
+// }
+// .toWhite {
+//   animation: toBlack 0.25s ease-in-out reverse;
+// }
+body {
+	transition: background-color 0.25s ease-in-out;
 }
-.toWhite {
-  animation: toBlack 0.25s ease-in-out forwards;
-  animation-direction: reverse;
+#body {
+	transition: opacity 0.25s ease-in-out;
+}
+.drawer {
+	transition: margin-left 0.25s ease-in-out;
 }
 
 @keyframes rotateUp {

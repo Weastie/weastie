@@ -3,11 +3,24 @@ extends ../core/template.pug
 block headExtra
 	title=global.essentials.formatTitle('Hack Tools')
 	meta(name='description', content='Some useful tools for hacking')
+	style.
+		.toolDiv {
+			border: 1px solid darkblue;
+			border-radius: 10px;
+			padding: 20px;
+			margin: 15px 0px;
+		}
+		.toolDiv a {
+			font-size: 1.2em;
+		}
 
 block content
 	h1 Hack Tools
-	ul
-		li
-			a(href='/hack_tools/listener') HTTP Request Listener
-		li
-			a(href='/hack_tools/converter') Base Converter
+	div.toolDiv
+		a(href='/hack_tools/listener') HTTP Request Listener
+		br
+		span.dateGrey Listens and logs HTTP requests at a specified URL, useful for XSS.
+	div.toolDiv
+		a(href='/hack_tools/converter') Base Converter
+		br
+		span.dateGrey Converts between multiple bases, including ascii, base64, hex, etc.

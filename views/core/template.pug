@@ -11,14 +11,13 @@ html
 		script(src='/assets/script/core/body.js')
 		block headExtra
 	body
+		//- Drawer is hidden by default. Otherwise it shows up for a few milliseconds
 		div#mainDrawer.drawer.hidden
 			ul
 				li
 					a(href='/blogs') Blogs
 				li
 					a(href='/games') Games
-				li
-					a(href='https://www.youtube.com/channel/UCsA9BVmiT0sG4d6cwBzpM6Q') Youtube
 				li
 					a(href='/hack_tools') Hack Tools
 				if sess.loggedIn
@@ -53,8 +52,6 @@ html
 								a(href='/blogs') Blogs
 							li
 								a(href='/games') Games
-							li
-								a(href='https://www.youtube.com/channel/UCsA9BVmiT0sG4d6cwBzpM6Q') Youtube
 							li
 								a(href='/hack_tools') Hack Tools
 							//- Right side of nav bar

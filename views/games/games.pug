@@ -1,14 +1,25 @@
 extends ../core/template.pug
 
 block headExtra
-	title=global.essentials.formatTitle("Home")
+	title=global.essentials.formatTitle('Games')
+	style.
+		.gameDiv {
+			border: 1px solid darkblue;
+			border-radius: 10px;
+			padding: 20px;
+			margin: 15px 0px;
+		}
+		.gameDiv a {
+			font-size: 1.2em;
+		}
 
 block content
 	h1 Games
-	ul
-		li
-			a(href='/games/brashbrawl') Brashbrawl
-		li
-			a(href='/games/become_a_law') Become a Law (AP Gov Final Project)
-		//- li
-			a(href='/games/box') Box (beta)
+	div.gameDiv
+		a(href='/games/brashbrawl') Brashbrawl
+		br
+		span My first multiplayer game, extremely inefficient, and only one server to play on. 
+	div.gameDiv
+		a(href='/games/become_a_law') Become a Law (AP Gov Final Project)
+		br
+		span Final project for AP Gov, travel through the stages of becoming a law!
