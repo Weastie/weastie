@@ -5,7 +5,7 @@ var raisedButtons;
 
 $(document).ready(function () {
 	drawer = $('.drawer');
-	drawer.css('margin-left', '-300px');
+	drawer.css('transform', 'translateX(-300px)');
 	raisedButtons = $('.btnRaised');
 
 	// Create alerts
@@ -46,13 +46,14 @@ $(document).ready(function () {
 		// // target.hasClass('hidden') || target.hasClass('drawerHide') ? openDrawer(target) : closeDrawer(target);
 		// $(target).css('margin-left') === '0px' ? closeDrawer(target) : openDrawer(target);
 		$(drawer).removeClass('hidden');
-		$(drawer).css('margin-left') === '0px' ? closeDrawer() : openDrawer();
+		$(drawer).position().left > -150 ? closeDrawer() : openDrawer();
 	});
 });
 
 function openDrawer () {
 	// Move in the drawer
-	$(drawer).css('margin-left', '0px');
+	// $(drawer).css('margin-left', '0px');
+	$(drawer).css('transform', 'translateX(0px)');
 
 	// Fade out the body (besides the drawer)
 	$(document.body).css('background-color', '#424242');
@@ -60,7 +61,8 @@ function openDrawer () {
 }
 function closeDrawer () {
 	// Move out the drawer
-	$(drawer).css('margin-left', '-300px');
+	// $(drawer).css('margin-left', '-300px');
+	$(drawer).css('transform', 'translateX(-300px)');
 
 	// Fade in the body (besides the drawer)
 	$(document.body).css('background-color', 'white');

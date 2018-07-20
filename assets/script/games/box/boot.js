@@ -28,7 +28,7 @@ States.boot.prototype = {
 		kb.DOWN = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 		kb.RIGHT = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 		kb.SPACE = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    kb.CTRL = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+		kb.CTRL = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
 	},
 	create: function () {
 		game.state.start('preload');

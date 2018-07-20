@@ -44,7 +44,7 @@ body {
   transition: opacity 0.25s ease-in-out;
 }
 .drawer {
-  transition: margin-left 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out;
 }
 @keyframes rotateUp {
   0% {
