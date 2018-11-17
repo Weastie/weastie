@@ -5,6 +5,12 @@ block headExtra
 
 block content
 	h1 HTTP Request Listener
+	if data.full
+		p(style='color: red')
+			| This listener has been filled up with more than 100kb of data! What is wrong with you!
+			| No more data may be added to this listener to prevent a DOS attack. If you are a human,&nbsp;
+			| feel free to create another listener.
+		hr
 	p Listening to requests at&nbsp;
 		a(href=(global.path.join('/l/', id, '/')))=(global.path.join('/l/', id, '/'))
 	p Listener expires at:&nbsp;

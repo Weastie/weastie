@@ -20,13 +20,16 @@ const combijson = require('combijson');
 const mongoClient = require('mongodb').MongoClient;
 // Store mongo collection data here
 const mCols = {};
+// Calculations with mongodb storage size
+var BSON = require('bson');
+var bson = new BSON();
 // Password hashing
 const bcrypt = require('bcrypt-nodejs');
 // Post data to other servers for verification
-// const request = require('request')
+const request = require('request');
 // Read unencrypted body data
 var bodyParser = require('body-parser');
-// Read multipart forms
+// Read forms
 // const formidable = require('formidable');
 // Manage file system
 const fs = require('fs');
@@ -37,11 +40,20 @@ global.path = path;
 var http = require('http');
 var https = require('https');
 
+// To run system commands
+var exec = require('child_process').exec;
+
+// Captcha key
+var captchaKey;
+
+// Compile less
+exec('lessc assets/css/pre-compile/main.less assets/css/compiled/main.css');
+
 const PRODUCTION = (process.env.PRODUCTION === 'true');
 console.log('PRODUCTION MODE: ' + PRODUCTION);
 
 // Middleware and express configuration
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false, limit: '80kb'}));
 app.use(compression());
 app.set('port', PRODUCTION ? 443 : 3000); // 443 (https) for production, 3000 for testing
 app.set('view engine', 'pug');
@@ -78,7 +90,8 @@ jsonReader.jsonObject('./private.json', function (err, data) {
 	assert.equal(null, err, 'Error when reading private.json: ' + err);
 	// Use session secret
 	app.use(session({secret: data.session_secret, saveUninitialized: true, resave: true}));
-
+	// Captcha key
+	captchaKey = data.captcha_secret;
 	// Connect to MongoDB server
 	mongoClient.connect(data.databaseURL, function (err, client) {
 		assert.equal(null, err, 'Error: Failed to connect to database: ' + err);
@@ -114,6 +127,7 @@ var renderTempl = function (file, req, res, extra) {
 
 // Shortcut to 404
 var render404 = function (req, res) {
+	res.status(404);
 	renderTempl('core/result', req, res, {error: true, text: 'Error 404: Page not found'});
 };
 
@@ -221,6 +235,7 @@ app.post('/login', function (req, res) {
 app.get('/register', function (req, res) {
 	renderTempl('account/register', req, res);
 });
+
 app.post('/register', function (req, res) {
 	var form = JSON.parse(JSON.stringify(req.body));
 	// Make sure all parameters are a string
@@ -332,14 +347,7 @@ app.get('/blog/:_id', function (req, res) {
  * ADMIN
  */
 // Middleware for only allowing users to access admin functions if correct session variables set
-app.get(/(\/admin)(.+)?/, function (req, res, next) {
-	if (req.session.loggedIn && req.session.permissions === 2) {
-		next();
-	} else {
-		render404(req, res);
-	}
-});
-app.post(/(\/admin)(.+)?/, function (req, res, next) {
+app.all(/(\/admin)(.+)?/, function (req, res, next) {
 	if (req.session.loggedIn && req.session.permissions === 2) {
 		next();
 	} else {
@@ -408,41 +416,69 @@ app.get('/hack_tools/listener/:_id', function (req, res) {
 });
 
 app.all(['/l/:_id', '/l/:_id/*'], function (req, res) {
+	res.redirect('/');
 	var id = global.essentials.convertID(req.params._id);
 	mCols.listeners.findOne({_id: id}, function (err, doc) {
 		assert.equal(err, null, 'Error when searching for listener (2): ' + err);
 		if (doc) {
-			var info = {
-				date: Date.now(),
-				method: req.method,
-				ip: req.ip,
-				path: req.path,
-				body: req.body
-			};
-			mCols.listeners.update({_id: id}, {$push: {requests: info}});
-			res.redirect('/');
-		} else {
-			res.redirect('/');
+			if (!doc.full) {
+				// The doc is not over the limit so we'll add the new data
+				var info = {
+					date: Date.now(),
+					method: req.method,
+					ip: req.ip,
+					path: req.path,
+					body: req.body
+				};
+				mCols.listeners.update({_id: id}, {$push: {requests: info}}, function (err) {
+					assert.equal(err, null, 'Error adding listen data to collection: ' + err);
+					// Now let's test the size of it the collection to make sure it isn't too big
+					// Max: 100kb
+					var size = bson.calculateObjectSize(doc) + bson.calculateObjectSize(info);
+					console.log('size: ' + size);
+					if (size > 100000) {
+						mCols.listeners.update({_id: id}, {$set: {full: true}});
+					}
+				});
+			}
 		}
 	});
 });
 
 app.post('/hack_tools/create_listener', function (req, res) {
-	var id = generateID(4);
-	mCols.listeners.findOne({_id: id}, function (err, doc) {
-		// Make sure that the listener does not currently exist
-		assert.equal(err, null, 'Error checking if listener exists: ' + err);
-		if (doc) {
-			res.end('Something super duper rare happened! Try again please...');
-		} else {
-			mCols.listeners.insertOne({
-				_id: id,
-				createdAt: new Date(),
-				requests: []
-			}, function (err) {
-				assert.equal(err, null, 'Error creating listener: ' + err);
-				res.redirect(path.join('/hack_tools/listener/', global.essentials.convertID(id)));
+	// Test captcha
+	request({
+		url: 'https://www.google.com/recaptcha/api/siteverify',
+		method: 'POST',
+		form: {
+			secret: captchaKey,
+			response: req.body['g-recaptcha-response'],
+			remoteip: req.ip
+		}
+	}, function (err, response, body) {
+		assert.equal(err, null, 'Error testing google captcha key: ' + err);
+		if (JSON.parse(body).success) {
+			// Success!
+			var id = generateID(4);
+			mCols.listeners.findOne({_id: id}, function (err, doc) {
+				// Make sure that the listener does not currently exist
+				assert.equal(err, null, 'Error checking if listener exists: ' + err);
+				if (doc) {
+					res.end('Something super duper rare happened! Try again please...');
+				} else {
+					mCols.listeners.insertOne({
+						_id: id,
+						createdAt: new Date(),
+						requests: [],
+						full: false
+					}, function (err) {
+						assert.equal(err, null, 'Error creating listener: ' + err);
+						res.redirect(path.join('/hack_tools/listener/', global.essentials.convertID(id)));
+					});
+				}
 			});
+		} else {
+			renderTempl('hack_tools/listener/setup', req, res, {alerts: [{message: 'Please complete captcha', type: 'error'}]});
 		}
 	});
 });

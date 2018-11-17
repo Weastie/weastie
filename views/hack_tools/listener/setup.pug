@@ -2,6 +2,7 @@ extends ../../core/template.pug
 
 block headExtra
 	title=global.essentials.formatTitle(['Hack Tools', 'Listener'])
+	script(src='https://www.google.com/recaptcha/api.js')
 
 block content
 	h1 HTTP Request Listener
@@ -21,5 +22,6 @@ block content
 	p The listener will expire after 48 hours. Feel free to create another one after expiration.
 		
 	form(action='/hack_tools/create_listener', method='POST').styledForm
+		div(class="g-recaptcha", data-sitekey="6Lca_GUUAAAAABLWyyHAjPS-sYZRBPWVy3YGbx9f")
 		input(type='submit', value='Create a listener').btn.btnRed.btnRaised
 	
